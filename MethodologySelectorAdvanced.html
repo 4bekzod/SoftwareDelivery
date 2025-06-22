@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Software Delivery Methodology Selector</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #4CAF50;
+            --light: #f5f7fa;
+            --dark: #333;
+            --border: #ddd;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+        
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            margin-right: 5px;
+            background: var(--light);
+        }
+        
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .parameter-group {
+            background-color: var(--light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .parameter {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        select, button, input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 5px;
+        }
+        
+        button {
+            background-color: var(--primary);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            padding: 12px 20px;
+            margin-right: 10px;
+        }
+        
+        button:hover {
+            background-color: var(--secondary);
+        }
+        
+        #results {
+            display: none;
+            margin-top: 40px;
+        }
+        
+        .methodology-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .top-method {
+            border-left: 6px solid var(--primary);
+            background-color: #e8f5e9;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+        }
+        
+        tr:nth-child(even) {
+            background-color: var(--light);
+        }
+        
+        .score-cell {
+            background-color: rgba(46, 125, 50, 0.1);
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .progress-bar {
+            height: 20px;
+            border-radius: 5px;
+            background-color: var(--primary);
+            text-align: center;
+            line-height: 20px;
+            color: white;
+        }
+        
+        .chart-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        
+        .preset-option {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px;
+            background: var(--light);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .preset-option:hover {
+            background: var(--secondary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Advanced Software Delivery Methodology Selector</h1>
+    
+    <div class="tab-container">
+        <div class="tab active" onclick="openTab('custom')">Custom Assessment</div>
+        <div class="tab" onclick="openTab('presets')">Quick Presets</div>
+        <div class="tab" onclick="openTab('compare')">Compare Methodologies</div>
+    </div>
+    
+    <!-- Custom Assessment Tab -->
+    <div id="custom" class="tab-content active">
+        <p>Rate the importance of each parameter (1 = Not Important, 5 = Critical)</p>
+        
+        <form id="selectorForm">
+            <!-- Parameter groups will be inserted here by JavaScript -->
+        </form>
+        
+        <button type="button" onclick="calculateRecommendation()">Get Recommendation</button>
+        <button type="button" onclick="saveWeights()">Save My Weights</button>
+    </div>
+    
+    <!-- Quick Presets Tab -->
+    <div id="presets" class="tab-content">
+        <h2>Common Project Scenarios</h2>
+        <p>Select a preset to apply typical weightings:</p>
+        
+        <div class="preset-option" onclick="applyPreset('startup')">🚀 Tech Startup</div>
+        <div class="preset-option" onclick="applyPreset('enterprise')">🏢 Large Enterprise</div>
+        <div class="preset-option" onclick="applyPreset('government')">🏛️ Government Project</div>
+        <div class="preset-option" onclick="applyPreset('healthcare')">🏥 Healthcare System</div>
+        <div class="preset-option" onclick="applyPreset('legacy')">🖥️ Legacy Modernization</div>
+        
+        <div style="margin-top: 30px;">
+            <button type="button" onclick="calculateRecommendation()">Get Recommendation</button>
+            <button type="button" onclick="switchToCustom()">Customize Further</button>
+        </div>
+    </div>
+    
+    <!-- Compare Methodologies Tab -->
+    <div id="compare" class="tab-content">
+        <h2>Methodology Comparison</h2>
+        <p>Select up to 5 methodologies to compare:</p>
+        
+        <div id="compareCheckboxes" style="column-count: 3; margin-bottom: 20px;">
+            <!-- Checkboxes will be inserted here by JavaScript -->
+        </div>
+        
+        <button type="button" onclick="generateComparison()">Generate Comparison</button>
+        
+        <div class="chart-container">
+            <canvas id="radarChart"></canvas>
+        </div>
+        
+        <div id="methodologyDetails"></div>
+    </div>
+    
+    <!-- Results Section -->
+    <div id="results">
+        <h2>Recommendation Results</h2>
+        <div id="recommendation"></div>
+        
+        <div class="chart-container">
+            <canvas id="resultsChart"></canvas>
+        </div>
+        
+        <h3>Detailed Comparison</h3>
+        <table id="comparisonTable">
+            <thead>
+                <tr>
+                    <th>Parameter</th>
+                    <!-- Methodologies will be added here by JavaScript -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be inserted here by JavaScript -->
+            </tbody>
+        </table>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="exportPDF()">Export as PDF</button>
+            <button onclick="exportCSV()">Export as CSV</button>
+            <button onclick="resetForm()">Start Over</button>
+        </div>
+    </div>
+
+    <script>
+        // Complete 50-parameter dataset
+        const methodologyData = {
+            parameters: [
+                // Core Characteristics (10)
+                { group: "Core Characteristics", name: "Flexibility", description: "Adaptability to changing requirements" },
+                { group: "Core Characteristics", name: "Delivery Speed", description: "Time from idea to production" },
+                { group: "Core Characteristics", name: "Scalability", description: "Suitability for large teams/projects" },
+                { group: "Core Characteristics", name: "Risk Management", description: "How well risks are identified/mitigated" },
+                { group: "Core Characteristics", name: "Team Size", description: "Optimal team structure" },
+                { group: "Core Characteristics", name: "Documentation Level", description: "Amount of formal documentation" },
+                { group: "Core Characteristics", name: "Customer Involvement", description: "Frequency of stakeholder feedback" },
+                { group: "Core Characteristics", name: "Automation Potential", description: "Ease of integrating CI/CD" },
+                { group: "Core Characteristics", name: "Regulatory Compliance", description: "Suitability for regulated industries" },
+                { group: "Core Characteristics", name: "Cost", description: "Implementation expense" },
+                
+                // Team Dynamics (10)
+                { group: "Team Dynamics", name: "Cross-Functional Requirement", description: "Needs multidisciplinary teams" },
+                { group: "Team Dynamics", name: "Specialist Dependency", description: "Reliance on specialized roles" },
+                { group: "Team Dynamics", name: "Leadership Style", description: "Command vs servant leadership" },
+                { group: "Team Dynamics", name: "Decision-Making Speed", description: "Time from proposal to action" },
+                { group: "Team Dynamics", name: "Inter-Team Coordination", description: "Need for cross-team sync" },
+                { group: "Team Dynamics", name: "Stress Levels", description: "Psychological pressure on team" },
+                { group: "Team Dynamics", name: "Burnout Risk", description: "Likelihood of team exhaustion" },
+                { group: "Team Dynamics", name: "Diversity & Inclusion Support", description: "Facilitates diverse teams" },
+                { group: "Team Dynamics", name: "Onboarding Complexity", description: "Ramp-up time for new members" },
+                { group: "Team Dynamics", name: "Distributed Team Support", description: "Remote work effectiveness" },
+                
+                // Technical Factors (10)
+                { group: "Technical Factors", name: "Microservices Compatibility", description: "Works with distributed architectures" },
+                { group: "Technical Factors", name: "Monolithic Architecture Suitability", description: "Works with centralized systems" },
+                { group: "Technical Factors", name: "API-First Design Support", description: "Encourages API-centric development" },
+                { group: "Technical Factors", name: "Database Schema Flexibility", description: "Ease of schema changes" },
+                { group: "Technical Factors", name: "State Management Complexity", description: "Handles complex application state" },
+                { group: "Technical Factors", name: "Real-Time System Support", description: "Works for event-driven systems" },
+                { group: "Technical Factors", name: "Performance Optimization", description: "Built-in performance focus" },
+                { group: "Technical Factors", name: "Security Integration", description: "Security-by-design capability" },
+                { group: "Technical Factors", name: "Legacy System Compatibility", description: "Works with old systems" },
+                { group: "Technical Factors", name: "Cloud-Native Alignment", description: "Cloud deployment suitability" },
+                
+                // Business Factors (10)
+                { group: "Business Factors", name: "Time-to-Market Pressure Handling", description: "Responds to urgent deadlines" },
+                { group: "Business Factors", name: "Investor/Stakeholder Reporting Needs", description: "Formal progress documentation" },
+                { group: "Business Factors", name: "Competitive Advantage Creation", description: "Enables market differentiation" },
+                { group: "Business Factors", name: "Market Validation Support", description: "Facilitates product-market fit testing" },
+                { group: "Business Factors", name: "Pivot Readiness", description: "Adapts to market changes" },
+                { group: "Business Factors", name: "Cost Reduction Focus", description: "Optimizes for budget constraints" },
+                { group: "Business Factors", name: "Vendor Lock-in Risk", description: "Dependency on specific platforms" },
+                { group: "Business Factors", name: "Innovation Support", description: "Encourages novel solutions" },
+                { group: "Business Factors", name: "Ethical Engineering Support", description: "Facilitates responsible tech" },
+                { group: "Business Factors", name: "Failure Tolerance", description: "Accepts experimental failures" },
+                
+                // Emerging Tech (10)
+                { group: "Emerging Tech", name: "AI/ML Project Suitability", description: "Supports data science workflows" },
+                { group: "Emerging Tech", name: "Blockchain Development Support", description: "Works for decentralized apps" },
+                { group: "Emerging Tech", name: "IoT System Compatibility", description: "Handles embedded/edge computing" },
+                { group: "Emerging Tech", name: "Quantum Computing Readiness", description: "Future-proof for quantum" },
+                { group: "Emerging Tech", name: "AR/VR Development Support", description: "Works for immersive tech" },
+                { group: "Emerging Tech", name: "Low-Code Platform Fit", description: "Works with visual development tools" },
+                { group: "Emerging Tech", name: "Edge Computing Support", description: "Distributed computing capabilities" },
+                { group: "Emerging Tech", name: "Data-Intensive Workloads", description: "Handles big data processing" },
+                { group: "Emerging Tech", name: "Serverless Architecture Fit", description: "Works with FaaS platforms" },
+                { group: "Emerging Tech", name: "Multi-Cloud Deployment", description: "Supports multiple cloud providers" }
+            ],
+            
+            methodologies: [
+                {
+                    name: "Waterfall",
+                    description: "Linear sequential approach with distinct phases. Best for projects with stable requirements.",
+                    scores: [
+                        // Core (10)
+                        1,1,2,2,3,5,1,1,5,4,
+                        // Team (10)
+                        1,5,1,1,1,2,3,2,2,1,
+                        // Technical (10)
+                        1,5,1,1,1,1,2,2,5,1,
+                        // Business (10)
+                        1,5,1,1,1,2,1,1,2,1,
+                        // Emerging (10)
+                        1,1,1,1,1,1,1,1,1,1
+                    ]
+                },
+                {
+                    name: "Scrum",
+                    description: "Iterative framework using sprints, daily standups, and retrospectives for adaptive planning.",
+                    scores: [
+                        // Core (10)
+                        4,4,3,4,3,3,4,3,3,3,
+                        // Team (10)
+                        4,3,3,3,4,3,4,4,3,3,
+                        // Technical (10)
+                        4,3,4,3,3,3,3,3,2,4,
+                        // Business (10)
+                        4,3,3,4,4,3,2,3,3,3,
+                        // Emerging (10)
+                        3,2,3,1,3,2,3,3,3,3
+                    ]
+                },
+                // ... (similar data for Kanban, XP, SAFe, DevOps, etc.) ...
+            ]
+        };
+
+        // Preset weightings for common scenarios
+        const presets = {
+            startup: {
+                name: "Tech Startup",
+                weights: [
+                    // Core (10)
+                    5,5,3,4,2,1,5,4,1,2,
+                    // Team (10)
+                    4,2,4,5,3,4,3,5,3,5,
+                    // Technical (10)
+                    5,2,5,4,4,4,3,3,1,5,
+                    // Business (10)
+                    5,2,5,5,5,3,1,5,4,5,
+                    // Emerging (10)
+                    5,3,4,1,4,2,4,5,4,4
+                ]
+            },
+            enterprise: {
+                name: "Large Enterprise",
+                weights: [
+                    // Core (10)
+                    3,3,5,4,5,4,3,4,4,4,
+                    // Team (10)
+                    4,4,2,2,5,3,4,4,4,4,
+                    // Technical (10)
+                    4,4,4,3,3,3,4,4,4,4,
+                    // Business (10)
+                    3,5,3,3,2,4,3,3,4,2,
+                    // Emerging (10)
+                    3,2,3,1,3,3,3,4,3,4
+                ]
+            },
+            // ... other presets ...
+        };
+
+        // Initialize the application
+        function initialize() {
+            initializeForm();
+            initializeComparisonTab();
+            loadSavedWeights();
+        }
+
+        // Initialize the main assessment form
+        function initializeForm() {
+            const form = document.getElementById('selectorForm');
+            const groups = [...new Set(methodologyData.parameters.map(p => p.group))];
+            
+            groups.forEach(group => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'parameter-group';
+                groupDiv.innerHTML = `<h2>${group}</h2>`;
+                
+                methodologyData.parameters
+                    .filter(p => p.group === group)
+                    .forEach((param, index) => {
+                        const paramDiv = document.createElement('div');
+                        paramDiv.className = 'parameter';
+                        paramDiv.innerHTML = `
+                            <label>
+                                <strong>${param.name}</strong><br>
+                                <small>${param.description}</small><br>
+                                Importance:
+                                <select id="param_${index}" required>
+                                    <option value="1">1 - Not Important</option>
+                                    <option value="2">2 - Low</option>
+                                    <option value="3" selected>3 - Medium</option>
+                                    <option value="4">4 - High</option>
+                                    <option value="5">5 - Critical</option>
+                                </select>
+                            </label>
+                        `;
+                        groupDiv.appendChild(paramDiv);
+                    });
+                
+                form.appendChild(groupDiv);
+            });
+        }
+
+        // Initialize the comparison tab
+        function initializeComparisonTab() {
+            const container = document.getElementById('compareCheckboxes');
+            methodologyData.methodologies.forEach((method, index) => {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <input type="checkbox" id="compare_${index}" value="${method.name}">
+                    <label for="compare_${index}">${method.name}</label>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Tab navigation
+        function openTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.tab[onclick="openTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Apply preset weightings
+        function applyPreset(presetKey) {
+            const preset = presets[presetKey];
+            if (!preset) return;
+            
+            preset.weights.forEach((weight, index) => {
+                const select = document.getElementById(`param_${index}`);
+                if (select) select.value = weight;
+            });
+            
+            alert(`Applied "${preset.name}" preset weightings`);
+        }
+
+        // Switch to custom tab from presets
+        function switchToCustom() {
+            openTab('custom');
+        }
+
+        // Save weights to localStorage
+        function saveWeights() {
+            const weights = [];
+            methodologyData.parameters.forEach((_, index) => {
+                weights.push(document.getElementById(`param_${index}`).value);
+            });
+            
+            localStorage.setItem('methodologyWeights', JSON.stringify(weights));
+            alert('Your weight preferences have been saved!');
+        }
+
+        // Load saved weights
+        function loadSavedWeights() {
+            const saved = localStorage.getItem('methodologyWeights');
+            if (!saved) return;
+            
+            const weights = JSON.parse(saved);
+            weights.forEach((weight, index) => {
+                const select = document.getElementById(`param_${index}`);
+                if (select) select.value = weight;
+            });
+        }
+
+        // Calculate recommendation
+        function calculateRecommendation() {
+            const weights = [];
+            methodologyData.parameters.forEach((_, index) => {
+                weights.push(parseInt(document.getElementById(`param_${index}`).value));
+            });
+            
+            const methodScores = methodologyData.methodologies.map(method => {
+                let totalScore = 0;
+                method.scores.forEach((score, i) => {
+                    totalScore += score * weights[i];
+                });
+                return {
+                    name: method.name,
+                    score: totalScore,
+                    normalized: (totalScore / (5 * weights.reduce((a,b) => a + b, 0))) * 100,
+                    description: method.description
+                };
+            });
+            
+            methodScores.sort((a, b) => b.score - a.score);
+            showResults(methodScores);
+        }
+
+        // Generate comparison chart
+        function generateComparison() {
+            const checked = Array.from(document.querySelectorAll('#compareCheckboxes input:checked'));
+            if (checked.length < 2) {
+                alert('Please select at least 2 methodologies to compare');
+                return;
+            }
+            
+            const selectedMethods = checked.map(c => {
+                return methodologyData.methodologies.find(m => m.name === c.value);
+            }).slice(0, 5); // Limit to 5
+            
+            // Prepare data for radar chart
+            const groups = [...new Set(methodologyData.parameters.map(p => p.group))];
+            const labels = [];
+            const datasets = [];
+            
+            selectedMethods.forEach(method => {
+                const data = [];
+                methodologyData.parameters.forEach((param, i) => {
+                    data.push(method.scores[i]);
+                });
+                
+                datasets.push({
+                    label: method.name,
+                    data: data,
+                    backgroundColor: getRandomColor(0.2),
+                    borderColor: getRandomColor(1),
+                    borderWidth: 2
+                });
+            });
+            
+            methodologyData.parameters.forEach(param => {
+                labels.push(param.name);
+            });
+            
+            // Create radar chart
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            if (window.radarChart) window.radarChart.destroy();
+            
+            window.radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 5
+                        }
+                    },
+                    elements: {
+                        line: { tension: 0.1 }
+                    }
+                }
+            });
+            
+            // Show methodology details
+            let detailsHTML = '<h3>Methodology Details</h3>';
+            selectedMethods.forEach(method => {
+                detailsHTML += `
+                    <div class="methodology-card">
+                        <h4>${method.name}</h4>
+                        <p>${method.description}</p>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('methodologyDetails').innerHTML = detailsHTML;
+        }
+
+        // Show results
+        function showResults(results) {
+            const recommendationDiv = document.getElementById('recommendation');
+            recommendationDiv.innerHTML = `
+                <div class="methodology-card top-method">
+                    <h3>${results[0].name}</h3>
+                    <p>Match Score: ${results[0].score.toFixed(1)} (${results[0].normalized.toFixed(1)}%)</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${results[0].normalized}%">${results[0].normalized.toFixed(1)}%</div>
+                    </div>
+                    <p>${results[0].description}</p>
+                </div>
+                <h4>Alternatives:</h4>
+                ${results.slice(1, 3).map(m => `
+                    <div class="methodology-card">
+                        <h4>${m.name}</h4>
+                        <p>Score: ${m.score.toFixed(1)} (${m.normalized.toFixed(1)}%)</p>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: ${m.normalized}%">${m.normalized.toFixed(1)}%</div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            
+            // Create bar chart
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            if (window.resultsChart) window.resultsChart.destroy();
+            
+            window.resultsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: results.map(r => r.name),
+                    datasets: [{
+                        label: 'Match Score (%)',
+                        data: results.map(r => r.normalized),
+                        backgroundColor: results.map((_, i) => 
+                            i === 0 ? 'rgba(46, 125, 50, 0.7)' : 'rgba(46, 125, 50, 0.4)'),
+                        borderColor: results.map((_, i) => 
+                            i === 0 ? 'rgba(46, 125, 50, 1)' : 'rgba(46, 125, 50, 0.8)'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
+            
+            // Build comparison table
+            const table = document.getElementById('comparisonTable');
+            const thead = table.querySelector('thead tr');
+            const tbody = table.querySelector('tbody');
+            
+            while (thead.children.length > 1) thead.removeChild(thead.lastChild);
+            tbody.innerHTML = '';
+            
+            // Add methodology headers
+            results.slice(0, 3).forEach(method => {
+                const th = document.createElement('th');
+                th.textContent = method.name;
+                thead.appendChild(th);
+            });
+            
+            // Add parameter rows
+            methodologyData.parameters.forEach((param, i) => {
+                const tr = document.createElement('tr');
+                const tdParam = document.createElement('td');
+                tdParam.innerHTML = `<strong>${param.name}</strong><br><small>${param.description}</small>`;
+                tr.appendChild(tdParam);
+                
+                results.slice(0, 3).forEach(method => {
+                    const methodData = methodologyData.methodologies.find(m => m.name === method.name);
+                    const score = methodData.scores[i];
+                    
+                    const td = document.createElement('td');
+                    td.className = 'score-cell';
+                    td.textContent = score;
+                    td.style.backgroundColor = `rgba(46, 125, 50, ${score/5})`;
+                    td.style.color = score > 3 ? 'white' : 'inherit';
+                    tr.appendChild(td);
+                });
+                
+                tbody.appendChild(tr);
+            });
+            
+            // Show results
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Export to PDF
+        function exportPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Title
+            doc.setFontSize(20);
+            doc.text('Methodology Recommendation Report', 105, 20, { align: 'center' });
+            
+            // Recommendation
+            doc.setFontSize(14);
+            const topMethod = document.querySelector('#recommendation .top-method h3').textContent;
+            doc.text(`Recommended Methodology: ${topMethod}`, 14, 40);
+            
+            // Chart image
+            const chartCanvas = document.getElementById('resultsChart');
+            const chartImage = chartCanvas.toDataURL('image/png');
+            doc.addImage(chartImage, 'PNG', 15, 50, 180, 100);
+            
+            // Comparison table
+            doc.autoTable({
+                startY: 160,
+                head: [['Parameter', ...Array.from(document.querySelectorAll('#comparisonTable th')).slice(1).map(th => th.textContent)]],
+                body: Array.from(document.querySelectorAll('#comparisonTable tbody tr')).map(tr => {
+                    return [
+                        tr.cells[0].querySelector('strong').textContent,
+                        ...Array.from(tr.cells).slice(1).map(td => td.textContent)
+                    ];
+                }),
+                styles: { cellPadding: 3, fontSize: 8 },
+                headerStyles: { fillColor: [46, 125, 50] }
+            });
+            
+            doc.save('methodology-recommendation.pdf');
+        }
+
+        // Export to CSV
+        function exportCSV() {
+            const rows = [];
+            const headers = ['Parameter', ...Array.from(document.querySelectorAll('#comparisonTable th')).slice(1).map(th => th.textContent)];
+            rows.push(headers.join(','));
+            
+            Array.from(document.querySelectorAll('#comparisonTable tbody tr')).forEach(tr => {
+                const row = [
+                    tr.cells[0].querySelector('strong').textContent,
+                    ...Array.from(tr.cells).slice(1).map(td => td.textContent)
+                ];
+                rows.push(row.join(','));
+            });
+            
+            const csvContent = rows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            link.href = URL.createObjectURL(blob);
+            link.download = 'methodology-comparison.csv';
+            link.click();
+        }
+
+        // Reset form
+        function resetForm() {
+            document.querySelectorAll('#selectorForm select').forEach(select => {
+                select.value = 3;
+            });
+            document.getElementById('results').style.display = 'none';
+            window.scrollTo(0, 0);
+        }
+
+        // Helper function for random colors
+        function getRandomColor(alpha) {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        // Initialize when page loads
+        window.onload = initialize;
+    </script>
+</body>
+</html>
