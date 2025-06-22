@@ -1,454 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Software Delivery Methodology Selector</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website - Home</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            max-width: 900px;
-            margin: 0 auto;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
             padding: 20px;
-            color: #333;
+            background-color: #f4f4f4;
         }
-        .question {
-            background-color: #f5f7fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: none;
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
         }
-        .active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-        select, button {
+        nav {
+            background: #444;
             padding: 10px;
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            margin-top: 8px;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background-color 0.3s;
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
         }
-        button:hover {
-            background-color: #45a049;
+        nav a:hover {
+            background: #555;
         }
-        #result {
-            background-color: #e8f5e9;
+        main {
             padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 5px solid #2e7d32;
-            display: none;
+            background: #fff;
+            margin-top: 10px;
         }
-        #methodology {
-            color: #2e7d32;
-            font-weight: bold;
-            font-size: 24px;
-        }
-        .flow-chart {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        .node {
+        footer {
+            text-align: center;
             padding: 10px;
-            border: 2px solid #2e7d32;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: white;
-            font-weight: bold;
-        }
-        .connector {
-            width: 40px;
-            height: 2px;
-            background: #2e7d32;
-            margin: 0 -2px;
-            position: relative;
-            top: 20px;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            background: #333;
+            color: #fff;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <h1>Software Delivery Methodology Selector</h1>
-    <p>Answer the questions below to find the best development approach for your project:</p>
-
-    <div class="flow-chart">
-        <div class="node">1</div>
-        <div class="connector"></div>
-        <div class="node">2</div>
-        <div class="connector"></div>
-        <div class="node">3</div>
-        <div class="connector"></div>
-        <div class="node">4</div>
-        <div class="connector"></div>
-        <div class="node">5</div>
-        <div class="connector"></div>
-        <div class="node">6</div>
-        <div class="connector"></div>
-        <div class="node">7</div>
-        <div class="connector"></div>
-        <div class="node">8</div>
-        <div class="connector"></div>
-        <div class="node">9</div>
-        <div class="connector"></div>
-        <div class="node">10</div>
-    </div>
-
-    <!-- Question 1 -->
-    <div id="q1" class="question active">
-        <h3>1. Industry Type</h3>
-        <p>Is your project in a highly regulated industry? (Healthcare, Finance, Aerospace, Government)</p>
-        <select id="regulation">
-            <option value="">-- Select --</option>
-            <option value="yes">Yes, regulated industry</option>
-            <option value="no">No, standard industry</option>
-        </select>
-        <button onclick="nextQuestion('q1', 'regulation')">Continue</button>
-    </div>
-
-    <!-- Question 2 -->
-    <div id="q2" class="question">
-        <h3>2. Safety Requirements</h3>
-        <p>Is it safety-critical? (Failure could endanger lives or cause major disasters)</p>
-        <select id="safety">
-            <option value="">-- Select --</option>
-            <option value="yes">Yes, safety-critical</option>
-            <option value="no">No, standard risk</option>
-        </select>
-        <button onclick="nextQuestion('q2', 'safety')">Continue</button>
-    </div>
-
-    <!-- Question 3 -->
-    <div id="q3" class="question">
-        <h3>3. Team Structure</h3>
-        <p>What is your team size and distribution?</p>
-        <select id="teamSize">
-            <option value="">-- Select --</option>
-            <option value="small">Small (1-5 people, co-located)</option>
-            <option value="medium">Medium (6-20 people, mixed)</option>
-            <option value="large">Large (50+ people, multiple teams)</option>
-            <option value="remote">Fully remote/distributed</option>
-        </select>
-        <button onclick="nextQuestion('q3', 'teamSize')">Continue</button>
-    </div>
-
-    <!-- Question 4 -->
-    <div id="q4" class="question">
-        <h3>4. Technical Context</h3>
-        <p>What best describes your technical environment?</p>
-        <select id="techContext">
-            <option value="">-- Select --</option>
-            <option value="legacy">Legacy systems/maintenance</option>
-            <option value="cloud">Cloud-native/microservices</option>
-            <option value="embedded">Embedded/IoT systems</option>
-            <option value="ai">AI/ML/data-intensive</option>
-        </select>
-        <button onclick="nextQuestion('q4', 'techContext')">Continue</button>
-    </div>
-
-    <!-- Question 5 -->
-    <div id="q5" class="question">
-        <h3>5. Business Goals</h3>
-        <p>What is your primary business objective?</p>
-        <select id="businessGoal">
-            <option value="">-- Select --</option>
-            <option value="speed">Speed to market</option>
-            <option value="reliability">High reliability</option>
-            <option value="innovation">Breakthrough innovation</option>
-            <option value="cost">Cost reduction</option>
-        </select>
-        <button onclick="nextQuestion('q5', 'businessGoal')">Continue</button>
-    </div>
-
-    <!-- Question 6 -->
-    <div id="q6" class="question">
-        <h3>6. Requirements Stability</h3>
-        <p>How likely are requirements to change during development?</p>
-        <select id="requirements">
-            <option value="">-- Select --</option>
-            <option value="stable">Very stable (≤10% changes expected)</option>
-            <option value="moderate">Moderate (10-30% changes expected)</option>
-            <option value="volatile">Highly volatile (>30% changes expected)</option>
-        </select>
-        <button onclick="nextQuestion('q6', 'requirements')">Continue</button>
-    </div>
-
-    <!-- Question 7 -->
-    <div id="q7" class="question">
-        <h3>7. Release Frequency</h3>
-        <p>How often do you need to deliver updates to users?</p>
-        <select id="releaseFreq">
-            <option value="">-- Select --</option>
-            <option value="months">Every 3+ months</option>
-            <option value="weeks">Weekly to monthly</option>
-            <option value="days">Daily to weekly</option>
-        </select>
-        <button onclick="nextQuestion('q7', 'releaseFreq')">Continue</button>
-    </div>
-
-    <!-- Question 8 -->
-    <div id="q8" class="question">
-        <h3>8. Quality vs Speed</h3>
-        <p>What's more important for this project?</p>
-        <select id="qualitySpeed">
-            <option value="">-- Select --</option>
-            <option value="quality">Quality/reliability (even if slower)</option>
-            <option value="speed">Speed to market (accepting some risk)</option>
-            <option value="balance">Balance of both</option>
-        </select>
-        <button onclick="nextQuestion('q8', 'qualitySpeed')">Continue</button>
-    </div>
-
-    <!-- Question 9 -->
-    <div id="q9" class="question">
-        <h3>9. Team Experience</h3>
-        <p>How experienced is your team with Agile methods?</p>
-        <select id="teamExp">
-            <option value="">-- Select --</option>
-            <option value="novice">Novice (new to Agile)</option>
-            <option value="some">Some experience</option>
-            <option value="expert">Highly experienced</option>
-        </select>
-        <button onclick="nextQuestion('q9', 'teamExp')">Continue</button>
-    </div>
-
-    <!-- Question 10 -->
-    <div id="q10" class="question">
-        <h3>10. Customer Access</h3>
-        <p>How frequently can you get feedback from real users?</p>
-        <select id="customerAccess">
-            <option value="">-- Select --</option>
-            <option value="rare">Rarely (few times/year)</option>
-            <option value="sometimes">Occasionally (monthly)</option>
-            <option value="frequent">Continuously (weekly or more)</option>
-        </select>
-        <button onclick="calculateResult()">Get Recommendation</button>
-    </div>
-
-    <!-- Result -->
-    <div id="result">
-        <h2>Recommended Methodology: <span id="methodology"></span></h2>
-        <div id="rationale"></div>
-        <h3>Alternative Options:</h3>
-        <div id="alternatives"></div>
-        <h3>Implementation Tips:</h3>
-        <div id="tips"></div>
-        <button onclick="resetQuiz()" style="background-color: #2196F3;">Start Over</button>
-    </div>
-
-    <script>
-        const questions = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'];
-        let currentQuestion = 0;
-        const answers = {};
-
-        function nextQuestion(currentQ, selectId) {
-            const selectElement = document.getElementById(selectId);
-            if (selectElement.value === "") {
-                alert("Please select an option");
-                return;
-            }
-
-            answers[selectId] = selectElement.value;
-            
-            // Hide current question
-            document.getElementById(currentQ).classList.remove('active');
-            
-            // Show next question
-            currentQuestion++;
-            if (currentQuestion < questions.length) {
-                document.getElementById(questions[currentQuestion]).classList.add('active');
-                updateFlowChart();
-            }
-        }
-
-        function updateFlowChart() {
-            // Simple visualization of progress
-            const nodes = document.querySelectorAll('.node');
-            nodes.forEach((node, index) => {
-                if (index <= currentQuestion) {
-                    node.style.backgroundColor = '#4CAF50';
-                    node.style.color = 'white';
-                } else {
-                    node.style.backgroundColor = 'white';
-                    node.style.color = '#333';
-                }
-            });
-        }
-
-        function calculateResult() {
-            const selectElement = document.getElementById('customerAccess');
-            if (selectElement.value === "") {
-                alert("Please select an option");
-                return;
-            }
-            answers['customerAccess'] = selectElement.value;
-
-            // Hide last question
-            document.getElementById(questions[currentQuestion]).classList.remove('active');
-            
-            // Calculate result
-            const result = determineMethodology();
-            
-            // Show result
-            document.getElementById('methodology').textContent = result.methodology;
-            document.getElementById('rationale').innerHTML = `<p>${result.rationale}</p>`;
-            document.getElementById('alternatives').innerHTML = `<ul>${result.alternatives.map(alt => `<li><strong>${alt.name}</strong>: ${alt.reason}</li>`).join('')}</ul>`;
-            document.getElementById('tips').innerHTML = `<ul>${result.tips.map(tip => `<li>${tip}</li>`).join('')}</ul>`;
-            document.getElementById('result').style.display = 'block';
-        }
-
-        function determineMethodology() {
-            // Decision logic
-            if (answers.regulation === 'yes') {
-                if (answers.safety === 'yes') {
-                    return {
-                        methodology: "V-Model",
-                        rationale: "Safety-critical systems require the rigorous validation and verification phases that the V-Model provides.",
-                        alternatives: [
-                            { name: "Waterfall", reason: "For less complex safety-critical systems" },
-                            { name: "Spiral Model", reason: "When you need risk analysis with safety considerations" }
-                        ],
-                        tips: [
-                            "Implement rigorous documentation practices",
-                            "Plan for extensive testing phases",
-                            "Consider tooling for requirements traceability"
-                        ]
-                    };
-                }
-                return {
-                    methodology: "SAFe (Scaled Agile Framework)",
-                    rationale: "Large regulated organizations benefit from SAFe's structured approach to scaling Agile while maintaining compliance.",
-                    alternatives: [
-                        { name: "Waterfall", reason: "For projects with extremely stable requirements" },
-                        { name: "Hybrid (Scrum + Waterfall)", reason: "When you need some Agile flexibility but must maintain documentation" }
-                    ],
-                    tips: [
-                        "Establish clear compliance checkpoints",
-                        "Use SAFe's PI Planning for alignment",
-                        "Invest in Agile documentation tools"
-                    ]
-                };
-            }
-
-            if (answers.teamSize === 'large') {
-                return {
-                    methodology: "SAFe or LeSS",
-                    rationale: "Large organizations need frameworks designed to coordinate multiple Agile teams while maintaining alignment.",
-                    alternatives: [
-                        { name: "Scrum@Scale", reason: "For less hierarchical organizations" },
-                        { name: "Disciplined Agile", reason: "When you need more flexibility in process choices" }
-                    ],
-                    tips: [
-                        "Start with a pilot team before scaling",
-                        "Invest in Agile coaching",
-                        "Use visualization tools for cross-team dependencies"
-                    ]
-                };
-            }
-
-            if (answers.techContext === 'legacy') {
-                return {
-                    methodology: "Kanban with DevOps practices",
-                    rationale: "Legacy systems benefit from Kanban's continuous flow approach combined with DevOps for modernization.",
-                    alternatives: [
-                        { name: "Scrumban", reason: "When you need some Scrum structure with Kanban flexibility" },
-                        { name: "Waterfall", reason: "For very stable legacy systems with no planned changes" }
-                    ],
-                    tips: [
-                        "Focus on creating a value stream map",
-                        "Implement CI/CD pipelines incrementally",
-                        "Use feature toggles for safer deployments"
-                    ]
-                };
-            }
-
-            if (answers.businessGoal === 'innovation' && answers.teamSize === 'small') {
-                return {
-                    methodology: "Lean Startup + XP",
-                    rationale: "Innovation projects benefit from rapid experimentation (Lean) combined with technical excellence (XP).",
-                    alternatives: [
-                        { name: "Scrum", reason: "When you need more structure for your experiments" },
-                        { name: "Design Sprints", reason: "For focused innovation bursts" }
-                    ],
-                    tips: [
-                        "Build-measure-learn cycles should be short (1-2 weeks)",
-                        "Invest in automated testing early",
-                        "Practice pair programming for knowledge sharing"
-                    ]
-                };
-            }
-
-            // Default recommendation for Agile teams
-            if (answers.requirements === 'volatile' || answers.customerAccess === 'frequent') {
-                return {
-                    methodology: "Scrum",
-                    rationale: "Scrum provides the ideal balance of structure and flexibility for teams dealing with uncertainty.",
-                    alternatives: [
-                        { name: "Kanban", reason: "When work items vary significantly in size" },
-                        { name: "XP", reason: "For quality-critical projects with changing requirements" }
-                    ],
-                    tips: [
-                        "Keep sprints short (1-2 weeks) for maximum flexibility",
-                        "Invest in backlog refinement",
-                        "Ensure your Product Owner has decision-making authority"
-                    ]
-                };
-            }
-
-            // Final default
-            return {
-                methodology: "Scrum or Kanban",
-                rationale: "Most teams benefit from either Scrum's structured iterations or Kanban's continuous flow approach.",
-                alternatives: [
-                    { name: "XP", reason: "If code quality is your highest priority" },
-                    { name: "Lean", reason: "For optimizing flow and eliminating waste" }
-                ],
-                tips: [
-                    "Start with Scrum if new to Agile",
-                    "Consider Kanban if you have support/maintenance work",
-                    "Measure cycle time to identify bottlenecks"
-                ]
-            };
-        }
-
-        function resetQuiz() {
-            currentQuestion = 0;
-            answers = {};
-            document.getElementById('result').style.display = 'none';
-            
-            // Reset all selects
-            document.querySelectorAll('select').forEach(select => {
-                select.value = '';
-            });
-            
-            // Reset flow chart
-            document.querySelectorAll('.node').forEach((node, index) => {
-                node.style.backgroundColor = index === 0 ? '#4CAF50' : 'white';
-                node.style.color = index === 0 ? 'white' : '#333';
-            });
-            
-            // Show first question
-            document.getElementById('q1').classList.add('active');
-            for (let i = 1; i < questions.length; i++) {
-                document.getElementById(questions[i]).classList.remove('active');
-            }
-        }
-    </script>
+    <header>
+        <h1>Software Delivery Leader's Guide</h1>
+    </header>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="resources.html">Resources</a>
+        <a href="contact.html">Contact</a>
+        <a href="blog.html">Blog</a>
+    </nav>
+    <main>
+        <h2>Home Page</h2>
+        <p>This is the main page of my website. Click the links above to navigate to other sections.</p>
+        <ul>
+            <li><a href="about.html">Learn more about us</a></li>
+            <li><a href="contact.html">Get in touch</a></li>
+            <li><a href="blog.html">Read our blog</a></li>
+        </ul>
+    </main>
+    <footer>
+        <p>&copy; 2023 My Website. All rights reserved.</p>
+    </footer>
 </body>
 </html>
