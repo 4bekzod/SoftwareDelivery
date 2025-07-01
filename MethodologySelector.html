@@ -292,7 +292,7 @@
         }
 
         // Call it once on page load
-        updateFlowChart(); // Add this line
+        //updateFlowChart(); // Add this line
         
 
         function calculateResult() {
@@ -457,6 +457,13 @@
                 document.getElementById(questions[i]).classList.remove('active');
             }
         }
+
+        // Add this at the very end of your script or within a DOMContentLoaded listener
+        document.addEventListener('DOMContentLoaded', (event) => {
+            updateFlowChart();
+            
+        });
+        
     </script>
 </body>
 </html>
