@@ -291,6 +291,10 @@
             });
         }
 
+        // Call it once on page load
+        updateFlowChart(); // Add this line
+        
+
         function calculateResult() {
             const selectElement = document.getElementById('customerAccess');
             if (selectElement.value === "") {
