@@ -429,7 +429,11 @@
 
         function resetQuiz() {
             currentQuestion = 0;
-            answers = {};
+            //answers = {};
+            for (const key in answers) {
+                delete answers[key];
+            }
+            
             document.getElementById('result').style.display = 'none';
             
             // Reset all selects
